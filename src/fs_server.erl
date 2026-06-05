@@ -59,7 +59,9 @@ handle_info({_Port, {exit_status, Status}}, #state{path=Path,backend=Backend,cwd
 handle_info(_Info, State) -> {noreply, State}.
 
 terminate(_Reason, #state{port = Port}) ->
-    catch port_close(Port),
+    try port_close(Port)
+    catch _:_ -> ok
+    end,
     ok.
 
 code_change(_OldVsn, State, _Extra) -> {ok, State}.
